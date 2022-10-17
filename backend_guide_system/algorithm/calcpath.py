@@ -1,8 +1,10 @@
+#!/usr/bin/python3
 # coding=utf-8
 # @Time : 2022/9/16 10:11 AM
 # @Author : 王思哲
 # @File : calcpath.py
 # @Software: PyCharm
+import logging
 import time
 import numpy as np
 import pandas as pd
@@ -141,9 +143,11 @@ class CalcPath_DP:
         start = time.perf_counter()  # 程序开始时间
         dp = self.getMinDistance(np.zeros((self.cityNum, 1 << (self.cityNum - 1))))  # 计算dp列表以及最短路径的值
         path = self.getPath(dp)  # 获取最优路径，保存在path中，根据动态规划公式反向找出最短路径结点列表
-        print(path)
+        print(f"INFO:     路径下标（不加偏置）: {path}")
+        logging.info("路径下标", path)
         end = time.perf_counter()  # 程序结束时间
-        print(f'[INFO] 动态规划算法，{self.cityNum} 个地点，算法耗时 {end - start} 秒')
+        print(f'INFO:     动态规划算法，{self.cityNum} 个地点，算法耗时 {end - start} 秒')
+        logging.info(f'动态规划算法，{self.cityNum} 个地点，算法耗时 {end - start} 秒')
         return path, round(dp[0][(1 << (self.cityNum - 1)) - 1], 2)
 
 
@@ -157,18 +161,19 @@ class CalcPath_DP:
         # DP
         path, length = self.dynamicProgramming()
         # 输出文字结果
-        print("路线为：", end="")
+        print("INFO:     路线为：", end="")
+        route = ''
+
         for idx, pt in enumerate(path):
             print(f'[{self.num_place_dict[pt + BIAS][0]}]->', end="")
+            route += f'[{self.num_place_dict[pt + BIAS][0]}]->'
+        route += f'[{self.num_place_dict[path[0] + BIAS][0]}]'
         print(f'[{self.num_place_dict[path[0] + BIAS][0]}]')
-        print(f'路线总长度：{length}米')
+        logging.info("路线为：", route)
+        print(f'INFO:     路线总长度：{length}米')
+        logging.info(f'路线总长度：{length}米')
         # 绘制路线图
         path_draw_list = [p + BIAS for p in path]
         path_name_list = [self.num_place_dict[x][0] for x in path_draw_list]
         self.path_draw(path_draw_list)
-        # print(f'[INFO] 总耗时 {ed - st} 秒')
         return path_draw_list, path_name_list, length
-
-# if __name__ == "__main__":
-#     a = CalcPath_DP(10, 14)
-#     a.run()

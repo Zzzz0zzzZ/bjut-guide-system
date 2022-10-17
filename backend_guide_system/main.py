@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # coding=utf-8
 # @Time : 2022/9/14 8:24 AM
 # @Author : 王思哲
@@ -64,3 +65,4 @@ async def download_files_stream():
 
 if __name__ == '__main__':
     uvicorn.run(app)
+    # uvicorn.run(app, host='0.0.0.0', port=4554)

@@ -10,6 +10,7 @@ from fastapi import FastAPI, Form
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from algorithm.calcpath import CalcPath_DP
+from funcs.getcourse import GetCourse
 
 # 实例化
 app=FastAPI()
@@ -62,6 +63,11 @@ async def download_files_stream():
     path_result_pic = open('data/res/path_result.png', mode="rb")
     return StreamingResponse(path_result_pic, media_type="image/png")
 
+@app.get("/next_course")
+def getNextCourse():
+    getCourse = GetCourse()
+    next_course = getCourse.get_course()
+    return f"{next_course}"
 
 if __name__ == '__main__':
     uvicorn.run(app)

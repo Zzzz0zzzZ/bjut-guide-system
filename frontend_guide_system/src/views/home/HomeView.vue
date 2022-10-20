@@ -1,11 +1,10 @@
 <template>
     <van-nav-bar title="BJUT校园导航" :safe-area-inset-top='true' />
+    <!-- 今日面板 -->
     <TodayCard />
-
     <div class="btn-area" id="btn-area-obj">
         <!-- 信息提示栏 -->
         <van-row v-if="showSelectAreaFlag" style="margin:5px">
-
             <van-col span="1" style="line-height: 32px;">
                 <van-icon name="points" color="#508aeb" size="22" />
             </van-col>
@@ -57,7 +56,11 @@
 import { Toast } from "vant"
 import { computed, onUpdated, ref } from "vue"
 import { treeStore } from '@/stores/treeStore'
+import { useRouter } from 'vue-router'
 import TodayCard from "../../components/TodayCard.vue"
+
+// 使用路由
+const router = useRouter()
 
 const showSelectAreaFlag = ref(false)   // 是否显示地点选择板
 const tree_st = treeStore()             // 缓存已选的点，保证切换页面后数据不会丢失
@@ -79,8 +82,20 @@ const closeSelectArea = () => {
     showSelectAreaFlag.value = false
 }
 
+// 地点列表不为空时才能进行导航
 const beginGuide = () => {
-    Toast("开始导航")
+    if (tree_st.selected_list.length > 0) {
+        router.push({
+            name: 'guide'
+        })
+    }
+    else {
+        Toast.fail({
+            message: '目的地不能为空',
+            duration: 500
+        })
+    }
+
 }
 
 const clearActiveId = () => {

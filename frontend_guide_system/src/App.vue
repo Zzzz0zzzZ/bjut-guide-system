@@ -12,6 +12,8 @@ import NavBar from './components/NavBar.vue';
 const themeVars = {
   navBarBackgroundColor: '#3d8af2',
   navBarTitleTextColor: '#ffffff',
+  navBarTextColor: '#ffffff',
+  navBarIconColor: '#ffffff',
   navBarTitleFontSize: '16px',
 }
 </script>

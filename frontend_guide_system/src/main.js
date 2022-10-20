@@ -15,7 +15,11 @@ import { Icon } from 'vant'
 import { createPinia } from 'pinia'
 import { Circle } from 'vant'
 import { Divider } from 'vant'
+import { Step, Steps } from 'vant'
 import 'vant/es/toast/style'
 import 'vant/lib/index.css'
+import axios from 'axios'
 
-createApp(App).use(router).use(Tabbar).use(TabbarItem).use(Card).use(Tag).use(Button).use(NavBar).use(ConfigProvider).use(Col).use(Row).use(ActionSheet).use(TreeSelect).use(Toast).use(Icon).use(createPinia()).use(Circle).use(Divider).mount('#app')
+axios.defaults.baseURL = ''
+
+createApp(App).use(router).use(Tabbar).use(TabbarItem).use(Card).use(Tag).use(Button).use(NavBar).use(ConfigProvider).use(Col).use(Row).use(ActionSheet).use(TreeSelect).use(Toast).use(Icon).use(createPinia()).use(Circle).use(Divider).use(Step).use(Steps).mount('#app')

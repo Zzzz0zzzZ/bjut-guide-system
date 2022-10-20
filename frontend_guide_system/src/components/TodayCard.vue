@@ -6,8 +6,9 @@
         </van-col>
         <van-col span="16">
             <van-row>
-                <van-col span="12">{{ today_info.time_info.today_date }}</van-col>
-                <van-col span="12">{{ today_info.time_info.weekday_list[today_info.time_info.today_weekday] }}</van-col>
+                <van-col span="14">{{ today_info.time_info.today_date }}</van-col>
+                <van-col span="10">{{ today_info.time_info.weekday_list[today_info.time_info.today_weekday] }}
+                </van-col>
             </van-row>
             <van-row style="text-align:center; justify-content:center">
                 <van-col span="4">{{ today_info.weather_info.city }}</van-col>
@@ -20,7 +21,6 @@
                 {{ notice }}
             </van-row>
         </van-col>
-
     </van-row>
 </template>
 
@@ -45,13 +45,13 @@ const today_info = ref({
 })
 const notice = ref('')
 const date = new Date()
-axios.defaults.baseURL = ''
+
 axios.get('/weather').then(res => {
     today_info.value.weather_info = res.data.weatherinfo
 })
 today_info.value.time_info.today_date = date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
 today_info.value.time_info.today_weekday = date.getDay()
-axios.defaults.baseURL = ''
+
 axios.get('/api/next_course').then(res => {
     notice.value = res.data
 })

@@ -1,5 +1,5 @@
 <template>
-    <van-nav-bar title="BJUT校园导航" :safe-area-inset-top='true' />
+    <van-nav-bar title="BJUT校园导航" :safe-area-inset-top='true' :fixed="true" :placeholder="true" />
     <!-- 今日面板 -->
     <TodayCard />
     <div class="btn-area" id="btn-area-obj">
@@ -12,7 +12,8 @@
             <van-col span="4" style="font-display:right;line-height: 32px;">已选择</van-col>
             <van-col span="1" :activeCount="activeCount"
                 style="background-color:lightgray;text-align: center;line-height: 32px;">{{
-                activeCount }}</van-col>
+                        activeCount
+                }}</van-col>
             <van-col span="1" style="line-height: 32px;">个</van-col>
             <van-col span="1"></van-col>
             <van-col span="5" style="justify-content:right; text-align: right;line-height: 32px;">
@@ -22,7 +23,7 @@
         </van-row>
         <!-- 树形选择 -->
         <van-tree-select v-if="showSelectAreaFlag" v-model:active-id="activeId" v-model:main-active-index="activeIndex"
-            :items="items" style="margin:5px" />
+            :items="items" style="margin: 5px;" />
     </div>
     <div class="btn-float-area" id="btn-float-obj">
         <!-- 开始导航&规划历史按钮 -->
@@ -67,7 +68,7 @@ const tree_st = treeStore()             // 缓存已选的点，保证切换页�
 // 动态更改btn-area大小，并更改显示的按钮，并显示Tree-Select组件
 const showSelectArea = () => {
     let btn_area_obj = document.getElementById('btn-area-obj')
-    btn_area_obj.style.height = '50%'
+    btn_area_obj.style.height = '57%'   //  调整treeSelect和按钮栏的覆盖bug
     let btn_row = document.getElementById('btn-row')
     btn_row.style.top = '10px'
     showSelectAreaFlag.value = true

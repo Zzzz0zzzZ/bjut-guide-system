@@ -176,4 +176,9 @@ class CalcPath_DP:
         path_draw_list = [p + BIAS for p in path]
         path_name_list = [self.num_place_dict[x][0] for x in path_draw_list]
         self.path_draw(path_draw_list)
-        return path_draw_list, path_name_list, length
+        # 得到结果列表中两点之间的距离
+        path_between_list = []
+        for idx in range(len(path_draw_list) - 1):
+            print(self.dist_matrix[path_draw_list[idx+1], 3])
+            path_between_list.append(self.dist_matrix[path_draw_list[idx], path_draw_list[idx+1]])
+        return path_draw_list, path_name_list, length, path_between_list

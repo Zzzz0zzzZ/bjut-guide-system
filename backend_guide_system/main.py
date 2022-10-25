@@ -52,9 +52,9 @@ def getPaths(bias=Form(None), num=Form(None)):
     # 实例化
     alg = CalcPath_DP(bias=BIAS, num=NUM)
     # 运行算法 DP
-    path_idx_list, path_num_list, path_length = alg.run()
+    path_idx_list, path_num_list, path_length, path_between_list = alg.run()
     # 返回json格式数据
-    return {"path_idx_list":path_idx_list,"path_num_list":path_num_list,"path_length":path_length}
+    return {"path_idx_list":path_idx_list,"path_num_list":path_num_list,"path_length":path_length, "path_between_list": path_between_list}
 
 
 #  返回图片
@@ -68,6 +68,10 @@ def getNextCourse():
     getCourse = GetCourse()
     next_course = getCourse.get_course()
     return f"{next_course}"
+
+@app.get("/items/{item_id}")
+def read_item(item_id: int):
+    return {"item_id": item_id}
 
 if __name__ == '__main__':
     uvicorn.run(app)

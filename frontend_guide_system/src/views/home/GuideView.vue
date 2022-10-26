@@ -192,11 +192,30 @@ const showTouchIndex = (idx) => {
 // 不同行进方式的不同返回结果
 const onChangedBarRes = ref(0)
 
-// 监听出行方式变化[暂时用不到]
-watch(active_bar, () => {
-    axios.get(`/api/items/${active_bar.value}`).then(res => {
-        // onChangedBarRes.value = res.data["item_id"]
-        console.log(res.data["item_id"]);
-    })
+// 监听出行方式变化, 动态修改到达时间
+watch(active_bar, (idx) => {
+    // 清空
+    arrival_time_show.value = []
+    // 获取当前时间, 以毫秒为单位, 并作为arrival_time_show的第一个元素
+    base_time.value = date.getHours() * 60 * 60 * 1000 + date.getMinutes() * 60 * 1000 + date.getSeconds() * 1000
+    arrival_time_show.value.push(base_time.value)
+    // arrival_time_show数组, 初始化时push了一个base_time, 这里继续向里追加, 每一次用前一个时间加需要的derta时间, 获得结果  单位: 毫秒
+    if (idx === 0) {
+        for (let i = 0; i < path_list.value.path_between_list.length; i++) {
+            arrival_time_show.value.push(arrival_time_show.value[i] + arrival_time.value.by_walk[i])
+        }
+    }
+    if (idx === 1) {
+        for (let i = 0; i < path_list.value.path_between_list.length; i++) {
+            arrival_time_show.value.push(arrival_time_show.value[i] + arrival_time.value.by_bike[i])
+        }
+    }
+    if (idx === 2) {
+        for (let i = 0; i < path_list.value.path_between_list.length; i++) {
+            arrival_time_show.value.push(arrival_time_show.value[i] + arrival_time.value.by_car[i])
+        }
+    }
+    // 用arrival_time_show数组的首尾两个元素相减, 获得全程耗时, 四舍五入  单位: 分钟
+    onChangedBarRes.value = Math.round((arrival_time_show.value.slice(-1)[0] - arrival_time_show.value[0]) / (1000 * 60))
 })
 </script>

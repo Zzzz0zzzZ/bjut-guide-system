@@ -18,6 +18,14 @@ module.exports = defineConfig({
         pathRewrite: {
           "^/api": "",
         }
+      },
+      '/todolist': {
+        target: "http://152.136.154.181:8060/",
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          "^/todolist": "",
+        }
       }
     }
   }

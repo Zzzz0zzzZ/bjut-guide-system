@@ -1,9 +1,12 @@
 import { defineStore } from "pinia"
+import { Toast } from "vant"
+import { SHA256 } from '@/utils/sha256'
 import axios from 'axios'
 
 export const tdlStore = defineStore('tdlStore', {
     state: () => {
         return {
+            token: null,
             count_total: null,         // 帖子总数
             count_finish: null,        // 帖子完成数
         }
@@ -11,17 +14,40 @@ export const tdlStore = defineStore('tdlStore', {
     actions: {
         updateCount() {
             axios({
-                method: "GET",
-                url: 'http://152.136.154.181:8060/count_finish/1',
+                method: 'POST',
+                url: '/todolist/login',
+                data: ({
+                    "username": "课设",
+                    "password": SHA256("123")
+                })
             }).then(res => {
-                this.count_finish = parseInt(res.data)
+                if (res.data.token === undefined) {
+                    Toast({
+                        message: "获取待办\n事项失败"
+                    })
+                } else {
+                    this.token = res.data.token
+                }
+                axios({
+                    method: "GET",
+                    url: '/todolist/count_finish/13',
+                    headers: ({
+                        "token": this.token
+                    })
+                }).then(res => {
+                    this.count_finish = parseInt(res.data)
+                })
+                axios({
+                    method: "GET",
+                    url: '/todolist/count_total/13',
+                    headers: ({
+                        "token": this.token
+                    })
+                }).then(res => {
+                    this.count_total = parseInt(res.data)
+                })
             })
-            axios({
-                method: "GET",
-                url: 'http://152.136.154.181:8060/count_total/1',
-            }).then(res => {
-                this.count_total = parseInt(res.data)
-            })
+
         }
     },
     getters: {

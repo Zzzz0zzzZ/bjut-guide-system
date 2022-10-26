@@ -92,6 +92,7 @@
 import { Toast } from 'vant'
 import { ref, watch } from 'vue'
 import { treeStore } from '@/stores/treeStore'
+import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import qs from 'qs'
 
@@ -106,6 +107,22 @@ const active_bar = ref(0)   // 选择出行方式的下标, 1-2-3
 const bar_title = ref(["步行", "骑行", "驾车"]) // 出行方式对应的名称
 
 const date = new Date()
+
+// 如果没有数据/路径错误, 进行路由重定向    如果正确，就展示加载图标
+const route = useRoute()
+const router = useRouter()
+if (route.path !== '/' && tree_st.selected_list.length === 0) {
+    router.push({
+        name: 'home'
+    })
+}
+else {
+    Toast.loading({
+        message: '加载中',
+        forbidClick: true,
+        duration: 0    // 0为一直展示, 知道axios完成, 执行Toast.clear()关闭
+    })
+}
 
 // 接受后端返回的路线结果
 const path_list = ref({
@@ -125,7 +142,7 @@ const arrival_time = ref({
 // 各种交通方式的base前进速度  单位: m/min
 const forward_velocity = ref({
     walk: 60,
-    bike: 250,
+    bike: 160,
     car: 350,
 })
 
@@ -175,13 +192,8 @@ axios({
         let blob = new Blob([res.data])
         let url = window.URL.createObjectURL(blob)
         res_pic.value = url
+        Toast.clear()
     })
-})
-
-Toast.loading({
-    message: '加载中...',
-    forbidClick: true,
-    duration: 500
 })
 
 // 展示用户点击的行的下标，调试用

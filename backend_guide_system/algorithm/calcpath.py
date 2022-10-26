@@ -4,6 +4,7 @@
 # @Author : 王思哲
 # @File : calcpath.py
 # @Software: PyCharm
+import datetime
 import logging
 import time
 import numpy as np
@@ -150,6 +151,33 @@ class CalcPath_DP:
         logging.info(f'动态规划算法，{self.cityNum} 个地点，算法耗时 {end - start} 秒')
         return path, round(dp[0][(1 << (self.cityNum - 1)) - 1], 2)
 
+    def save_data(self, path_num_list:list, path_length:int):
+        '''
+        完成最新路线的数据持久化, 并保证只保留10条历史数据, 避免数据存储空间过大
+        :param path_num_list: 路径序列名
+        :param path_length: 路径总长度
+        :return: 无
+        '''
+        processed_data = str(datetime.datetime.now())[:-10]
+        # 路径地点字符串
+        path = ""
+        for x in path_num_list:
+            path += x
+            path += ','
+        # 需要向csv文件追加的信息
+        write_data = {
+            '路径': [path],
+            '全长': [path_length],
+            '规划时间': [processed_data]
+        }
+        # 向csv追加一条记录
+        df = pd.DataFrame(write_data)
+        df.to_csv('./data/history/history_data.csv', mode='a', index=False, header=False, encoding='utf-8')
+        # 读csv, 只保留最新的10条数据
+        data_read = pd.read_csv('./data/history/history_data.csv', encoding='utf-8', header=None)
+        data_write = data_read[-10:]
+        # 写回csv
+        data_write.to_csv('./data/history/history_data.csv', header=None, index=None, encoding='utf-8')
 
     def run(self):
         '''
@@ -179,6 +207,8 @@ class CalcPath_DP:
         # 得到结果列表中两点之间的距离
         path_between_list = []
         for idx in range(len(path_draw_list) - 1):
-            print(self.dist_matrix[path_draw_list[idx+1], 3])
             path_between_list.append(self.dist_matrix[path_draw_list[idx], path_draw_list[idx+1]])
+        # 完成数据持久化
+        self.save_data(path_num_list=path_name_list, path_length=length)
+
         return path_draw_list, path_name_list, length, path_between_list

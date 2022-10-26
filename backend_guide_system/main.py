@@ -6,6 +6,7 @@
 # @Software: PyCharm
 
 import uvicorn
+import pandas as pd
 from fastapi import FastAPI, Form
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -54,14 +55,31 @@ def getPaths(bias=Form(None), num=Form(None)):
     # 运行算法 DP
     path_idx_list, path_num_list, path_length, path_between_list = alg.run()
     # 返回json格式数据
-    return {"path_idx_list":path_idx_list,"path_num_list":path_num_list,"path_length":path_length, "path_between_list": path_between_list}
+    return {
+        "path_idx_list": path_idx_list,
+        "path_num_list": path_num_list,
+        "path_length": path_length,
+        "path_between_list": path_between_list
+    }
 
+# 获取10条历史规划
+@app.get("/history_guide")
+def getHistoryGuide():
+    history_data = pd.read_csv('./data/history/history_data.csv', header=None, encoding='utf-8').values.tolist()
+    history_data_list = [{"path":path[:-1].replace(',', '->'), "path_length": path_length, "processed_time": processed_time} for path, path_length, processed_time in history_data]
+    history_data_list.reverse()
+    return {
+        "history_data": history_data_list
+    }
 
 #  返回图片
 @app.post("/result")
 async def download_files_stream():
     path_result_pic = open('data/res/path_result.png', mode="rb")
-    return StreamingResponse(path_result_pic, media_type="image/png")
+    return StreamingResponse(
+        path_result_pic,
+        media_type="image/png"
+    )
 
 @app.get("/next_course")
 def getNextCourse():
@@ -71,7 +89,9 @@ def getNextCourse():
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int):
-    return {"item_id": item_id}
+    return {
+        "item_id": item_id
+    }
 
 if __name__ == '__main__':
     uvicorn.run(app)

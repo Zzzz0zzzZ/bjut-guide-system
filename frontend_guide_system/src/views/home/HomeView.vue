@@ -1,5 +1,7 @@
 <template>
     <van-nav-bar title="BJUT校园导航" :safe-area-inset-top='true' :fixed="true" :placeholder="true" />
+    <!-- 首页背景图片待定 -->
+    <!-- <img src="@/assets/background.png" style="filter: blur(5px); width: 100%; height: 100%;"> -->
     <!-- 今日面板 -->
     <TodayCard />
     <div class="btn-area" id="btn-area-obj">
@@ -8,35 +10,64 @@
             <van-col span="1" style="line-height: 32px;">
                 <van-icon name="points" color="#508aeb" size="22" />
             </van-col>
-            <van-col span="11" style="font-display:left;line-height: 32px;">&nbsp;&nbsp;选择您的目的地！</van-col>
+            <van-col span="11" style="font-display:left;line-height: 32px; color: #3d8af2;">
+                &nbsp;&nbsp;选择您的目的地！
+            </van-col>
             <van-col span="4" style="font-display:right;line-height: 32px;">已选择</van-col>
-            <van-col span="1" :activeCount="activeCount"
-                style="background-color:lightgray;text-align: center;line-height: 32px;">{{
-                        activeCount
-                }}</van-col>
+            <van-col span="1" :activeCount="activeCount" style="color: #3d8af2 ;text-align: center;line-height: 32px;">
+                {{ activeCount }}
+            </van-col>
             <van-col span="1" style="line-height: 32px;">个</van-col>
             <van-col span="1"></van-col>
             <van-col span="5" style="justify-content:right; text-align: right;line-height: 32px;">
-                <van-button type="default" size="small" style="line-height: 32px;" @click="clearActiveId">清空
+                <van-button type="default" size="small" style="line-height: 32px;" @click="clearActiveId">
+                    清空已选
                 </van-button>
             </van-col>
         </van-row>
         <!-- 树形选择 -->
         <van-tree-select v-if="showSelectAreaFlag" v-model:active-id="activeId" v-model:main-active-index="activeIndex"
             :items="items" style="margin: 5px;" />
+        <div v-if="showHistoryGuideFlag" style="height: 83%; overflow: scroll; border-bottom: dashed #3d8af2;">
+            <van-row
+                style="line-height: 32px; position: sticky; top: 0px; background-color: white; border-bottom: dashed #3d8af2;">
+                <van-col span="1">&nbsp;&nbsp;</van-col>
+                <van-col span="1">
+                    <van-icon name="clock-o" color="#3d8af2" size="22" />
+                </van-col>
+                <van-col span="10" style="color: #3d8af2;">
+                    <h4 style="margin: 0px;">&nbsp;&nbsp;近期十条规划记录</h4>
+                </van-col>
+            </van-row>
+            <div v-for="(content, index) in guideHistoryData.history_data" :key="index"
+                style="border-bottom: dashed lightgrey; padding: 10px;">
+                <div>
+                    <span style="font-weight: bold;">路线:</span>
+                    &nbsp;{{ content.path }}
+                </div>
+                <div><span style="font-weight: bold;">路线长度:</span>&nbsp;{{ content.path_length }}米</div>
+                <div style="text-align: right; color: grey; font-size: small;">
+                    <span>规划于</span>
+                    &nbsp;{{ content.processed_time }}
+                </div>
+            </div>
+        </div>
     </div>
     <div class="btn-float-area" id="btn-float-obj">
-        <!-- 开始导航&规划历史按钮 -->
-        <van-row v-if="!showSelectAreaFlag" gutter="20" justify="center" style="position: relative; top: 16px;"
-            id="btn-row">
+        <!-- 开始导航 & 规划历史 按钮 -->
+        <van-row v-if="!showSelectAreaFlag && !showHistoryGuideFlag" gutter="20" justify="center"
+            style="position: relative; top: 16px;" id="btn-row">
             <van-col span="10">
                 <van-button type="primary" style="border-radius: 8px" @click="showSelectArea">开始导航</van-button>
             </van-col>
             <van-col span="10">
-                <van-button type="primary" style="border-radius: 8px; background-color: grey; border:grey">规划历史
+                <van-button type="primary" @click="showHistoryGuide"
+                    style="border-radius: 8px; background-color: grey; border:grey">
+                    规划历史
                 </van-button>
             </van-col>
         </van-row>
+        <!-- 确认导航 & 取消导航 按钮 -->
         <van-row v-if="showSelectAreaFlag" gutter="20" justify="center" style="position: relative; top: 16px;"
             id="btn-row-select">
             <van-col span="10">
@@ -50,6 +81,14 @@
                 </van-button>
             </van-col>
         </van-row>
+        <!-- 历史规划页面 返回按钮 -->
+        <van-row v-if="showHistoryGuideFlag" justify="center"
+            style="position:relative; top:16px; margin-left: 5%; margin-right: 5%;" id="btn-row-history">
+            <van-button type="primary" style="border-radius: 8px; background-color: grey; border:grey" block
+                @click="onClickHistoryBack">
+                返回
+            </van-button>
+        </van-row>
     </div>
 </template>
 
@@ -59,11 +98,14 @@ import { computed, onUpdated, ref } from "vue"
 import { treeStore } from '@/stores/treeStore'
 import { useRouter } from 'vue-router'
 import TodayCard from "../../components/TodayCard.vue"
+import axios from "axios"
 
 // 使用路由
 const router = useRouter()
 
+const guideHistoryData = ref([])        // 规划历史记录数据列表
 const showSelectAreaFlag = ref(false)   // 是否显示地点选择板
+const showHistoryGuideFlag = ref(false) // 是否显示历史规划板
 const tree_st = treeStore()             // 缓存已选的点，保证切换页面后数据不会丢失
 // 动态更改btn-area大小，并更改显示的按钮，并显示Tree-Select组件
 const showSelectArea = () => {
@@ -92,11 +134,34 @@ const beginGuide = () => {
     }
     else {
         Toast.fail({
-            message: '目的地不能为空',
-            duration: 500
+            message: '目的地个数\n不能为空',
+            duration: 800
         })
     }
 
+}
+
+// 查看历史信息
+const showHistoryGuide = () => {
+    axios.get('/api/history_guide').then(res => {
+        guideHistoryData.value = res.data
+    })
+    let btn_area_obj = document.getElementById('btn-area-obj')
+    btn_area_obj.style.height = '57%'
+    btn_area_obj.style.overflow = 'scroll'
+    let btn_row = document.getElementById('btn-row')
+    btn_row.style.top = '10px'
+    showHistoryGuideFlag.value = true
+}
+
+// 从历史规划面板返回初始状态
+const onClickHistoryBack = () => {
+    showHistoryGuideFlag.value = false
+    showSelectAreaFlag.value = false
+    let btn_area_obj = document.getElementById('btn-area-obj')
+    btn_area_obj.style.height = '10%'
+    let btn_row = document.getElementById('btn-row-history')
+    btn_row.style.top = '16px'
 }
 
 const clearActiveId = () => {

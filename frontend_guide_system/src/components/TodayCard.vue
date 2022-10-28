@@ -1,5 +1,5 @@
 <template>
-    <van-row align="center" class="td-card font-title">
+    <van-row align="center" class="td-card font-title" id="card">
         <van-col span="8">
             <van-circle v-model:current-rate="currentRate" :rate="rate" color="#508aeb" :text="text" :speed="100"
                 :stroke-width="60" style="width: 80%; position: relative; top: 5px;" />
@@ -32,7 +32,7 @@ import axios from 'axios';
 
 const tdl_st = tdlStore()
 tdl_st.updateCount()
-const rate = ref(tdl_st.getPortion)
+const rate = ref(0)
 const currentRate = ref(0)
 const text = computed(() => '今日待办:' + String(tdl_st.count_finish) + '/' + String(tdl_st.count_total))
 const today_info = ref({
@@ -45,6 +45,16 @@ const today_info = ref({
 })
 const notice = ref('')
 const date = new Date()
+
+setTimeout(() => {
+    // TodayCard入场动画
+    let td_card = document.getElementById('card')
+    td_card.style.top = '65px'
+    td_card.style.height = '15%'
+    td_card.style.opacity = 1
+    // 进度条动画
+    rate.value = tdl_st.getPortion
+}, 20)
 
 axios.get('/weather').then(res => {
     today_info.value.weather_info = res.data.weatherinfo
@@ -61,14 +71,16 @@ axios.get('/api/next_course').then(res => {
 <style scoped>
 .td-card {
     position: fixed;
-    top: 65px;
+    top: 0px;
     left: 2.5%;
     width: 95%;
-    height: 15%;
+    height: 0%;
     justify-content: center;
     text-align: center;
     background-color: rgba(225, 225, 225, 0.802);
     border-radius: 15px;
+    transition: 500ms;
+    opacity: 0;
 }
 
 .font-title {

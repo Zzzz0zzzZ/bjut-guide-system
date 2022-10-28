@@ -3,7 +3,7 @@
     <!-- 首页背景图片待定 -->
     <!-- <img src="@/assets/background.png" style="filter: blur(5px); width: 100%; height: 100%;"> -->
     <!-- 今日面板 -->
-    <TodayCard />
+    <TodayCard id="card" />
     <div class="btn-area" id="btn-area-obj">
         <!-- 信息提示栏 -->
         <van-row v-if="showSelectAreaFlag" style="margin:5px">
@@ -20,8 +20,8 @@
             <van-col span="1" style="line-height: 32px;">个</van-col>
             <van-col span="1"></van-col>
             <van-col span="5" style="justify-content:right; text-align: right;line-height: 32px;">
-                <van-button type="default" size="small" style="line-height: 32px;" @click="clearActiveId">
-                    清空已选
+                <van-button type="default" icon="close" size="small" style="line-height: 32px;" @click="clearActiveId">
+                    清空
                 </van-button>
             </van-col>
         </van-row>
@@ -58,10 +58,11 @@
         <van-row v-if="!showSelectAreaFlag && !showHistoryGuideFlag" gutter="20" justify="center"
             style="position: relative; top: 16px;" id="btn-row">
             <van-col span="10">
-                <van-button type="primary" style="border-radius: 8px" @click="showSelectArea">开始导航</van-button>
+                <van-button type="primary" icon="guide-o" style="border-radius: 8px" @click="showSelectArea">开始导航
+                </van-button>
             </van-col>
             <van-col span="10">
-                <van-button type="primary" @click="showHistoryGuide"
+                <van-button type="primary" icon="clock-o" @click="showHistoryGuide"
                     style="border-radius: 8px; background-color: grey; border:grey">
                     规划历史
                 </van-button>
@@ -71,13 +72,13 @@
         <van-row v-if="showSelectAreaFlag" gutter="20" justify="center" style="position: relative; top: 16px;"
             id="btn-row-select">
             <van-col span="10">
-                <van-button type="primary" style="border-radius: 8px" @click="beginGuide">
-                    &nbsp;&nbsp;&nbsp;&nbsp;确认&nbsp;&nbsp;&nbsp;&nbsp;
+                <van-button type="primary" icon="play-circle-o" style="border-radius: 8px" @click="beginGuide">
+                    &nbsp;&nbsp;确认&nbsp;&nbsp;&nbsp;&nbsp;
                 </van-button>
             </van-col>
             <van-col span="10">
-                <van-button type="primary" style="border-radius: 8px; background-color: grey; border:grey"
-                    @click="closeSelectArea">&nbsp;&nbsp;&nbsp;&nbsp;返回&nbsp;&nbsp;&nbsp;&nbsp;
+                <van-button type="primary" icon="revoke" style="border-radius: 8px; background-color: grey; border:grey"
+                    @click="closeSelectArea">&nbsp;&nbsp;返回&nbsp;&nbsp;&nbsp;&nbsp;
                 </van-button>
             </van-col>
         </van-row>
@@ -107,6 +108,7 @@ const guideHistoryData = ref([])        // 规划历史记录数据列表
 const showSelectAreaFlag = ref(false)   // 是否显示地点选择板
 const showHistoryGuideFlag = ref(false) // 是否显示历史规划板
 const tree_st = treeStore()             // 缓存已选的点，保证切换页面后数据不会丢失
+
 // 动态更改btn-area大小，并更改显示的按钮，并显示Tree-Select组件
 const showSelectArea = () => {
     let btn_area_obj = document.getElementById('btn-area-obj')
@@ -114,6 +116,7 @@ const showSelectArea = () => {
     let btn_row = document.getElementById('btn-row')
     btn_row.style.top = '10px'
     showSelectAreaFlag.value = true
+    visTodayCard()
 }
 
 // 关闭选择框，返回初始状态
@@ -123,6 +126,7 @@ const closeSelectArea = () => {
     let btn_row = document.getElementById('btn-row-select')
     btn_row.style.top = '16px'
     showSelectAreaFlag.value = false
+    visTodayCard()
 }
 
 // 地点列表不为空时才能进行导航
@@ -152,6 +156,7 @@ const showHistoryGuide = () => {
     let btn_row = document.getElementById('btn-row')
     btn_row.style.top = '10px'
     showHistoryGuideFlag.value = true
+    visTodayCard()
 }
 
 // 从历史规划面板返回初始状态
@@ -162,6 +167,7 @@ const onClickHistoryBack = () => {
     btn_area_obj.style.height = '10%'
     let btn_row = document.getElementById('btn-row-history')
     btn_row.style.top = '16px'
+    visTodayCard()
 }
 
 const clearActiveId = () => {
@@ -170,6 +176,20 @@ const clearActiveId = () => {
         message: '已清空',
         duration: 500
     })
+}
+
+const visTodayCard = () => {
+    let today_card = document.getElementById('card')
+    if (showHistoryGuideFlag.value || showSelectAreaFlag.value) {
+        today_card.style.top = '0px'
+        today_card.style.height = '0%'
+        today_card.style.opacity = 0
+    }
+    else {
+        today_card.style.top = '65px'
+        today_card.style.height = '15%'
+        today_card.style.opacity = 1
+    }
 }
 
 onUpdated(() => {

@@ -158,8 +158,7 @@ axios({
     method: 'POST',
     url: '/api/guide',
     data: qs.stringify({
-        "bias": 0,
-        "num": tree_st.selected_list.length
+        "chosen_list": tree_st.selected_list.toString()
     })
 }).then(res => {
     // 步骤条 active 下标，默认最后一个

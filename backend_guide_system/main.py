@@ -46,12 +46,11 @@ def getUsers():
 
 # 接受传入的地点列表，返回优化后的路线
 @app.post("/guide")
-def getPaths(bias=Form(None), num=Form(None)):
-    # 接受表单数据，确保为int类型
-    BIAS = int(bias)
-    NUM = int(num)
+def getPaths(chosen_list=Form(None)):
+    # 接受表单数据，转换为list类型
+    chosen_list =[int(x) for x in chosen_list.split(',')]
     # 实例化
-    alg = CalcPath_DP(bias=BIAS, num=NUM)
+    alg = CalcPath_DP(chosen_list=chosen_list)
     # 运行算法 DP
     path_idx_list, path_num_list, path_length, path_between_list = alg.run()
     # 返回json格式数据

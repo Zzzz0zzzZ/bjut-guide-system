@@ -19,19 +19,25 @@ mpl.rcParams["font.sans-serif"] = ["SimHei"]
 inf = 10e7
 
 class CalcPath_DP:
-    def __init__(self, bias, num):
+    def __init__(self, chosen_list:list):
         # 加载字典，用于结果输出
         self.num_place_dict = pd.read_csv('./data/read/num_place_dict.csv', header=None).values.tolist()
+        # 接受的用户chosen_list
+        self.chosen_list = chosen_list
         # 加载距离矩阵 ndarray
         self.dist_matrix = np.load('./data/read/dist_matrix.npy')
-        self.point = self.dist_matrix[bias:bias + num, bias:bias + num]
+        self.point = self.getPoints()
         # 加载地点坐标 二维list
         self.coordinate = pd.read_csv('./data/read/long_lat_finalized.csv', header=None).values.tolist()
         # 地点数量 int
-        self.cityNum = num
+        self.cityNum = len(chosen_list)
         # 常量
-        self.bias = bias
-        self.num = num
+        self.num = len(chosen_list)
+
+    def getPoints(self):
+        choose_lines = self.dist_matrix[self.chosen_list, :]
+        choose_rows_then = choose_lines[:, self.chosen_list]
+        return choose_rows_then
 
     def getMinDistance(self, dp):
         """
@@ -100,9 +106,10 @@ class CalcPath_DP:
             visited[pioneer] = True
             S = S ^ (1 << (pioneer - 1))
             min = inf
+        path = np.array(self.chosen_list)[path].tolist()
         return path
 
-    def path_draw(self, path):
+    def path_draw(self, path, length):
         '''
         根据路径结果，画出推荐路线图
         :param path: 结果路径 |type: list
@@ -117,7 +124,7 @@ class CalcPath_DP:
         x = data[:, 0]
         y = data[:, 1]
         ax.scatter(x, y, linewidths=0.1)
-        ax.set_title("北京工业大学校园导航-推荐路线")
+        ax.set_title(f"北京工业大学校园导航-推荐路线   全长{length}米")
         # for i, txt in enumerate(range(0, len(data))):
         #   ax.annotate(txt, (x[i], y[i]))
         for i in range(0, len(data)):
@@ -184,8 +191,7 @@ class CalcPath_DP:
         暴露给类外调用的方法，运行动态规划算法
         :return: 规划后路径节点列表 |type:list 规划后路径名称列表 |type:list 路径长度 |type:float
         '''
-        BIAS = self.bias
-        NUM = self.num
+
         # DP
         path, length = self.dynamicProgramming()
         # 输出文字结果
@@ -193,17 +199,18 @@ class CalcPath_DP:
         route = ''
 
         for idx, pt in enumerate(path):
-            print(f'[{self.num_place_dict[pt + BIAS][0]}]->', end="")
-            route += f'[{self.num_place_dict[pt + BIAS][0]}]->'
-        route += f'[{self.num_place_dict[path[0] + BIAS][0]}]'
-        print(f'[{self.num_place_dict[path[0] + BIAS][0]}]')
+            print(f'[{self.num_place_dict[pt][0]}]->', end="")
+            route += f'[{self.num_place_dict[pt][0]}]->'
+        route += f'[{self.num_place_dict[path[0]][0]}]'
+        print(f'[{self.num_place_dict[path[0]][0]}]')
         logging.info("路线为：", route)
         print(f'INFO:     路线总长度：{length}米')
         logging.info(f'路线总长度：{length}米')
+
         # 绘制路线图
-        path_draw_list = [p + BIAS for p in path]
+        path_draw_list = [p for p in path]
         path_name_list = [self.num_place_dict[x][0] for x in path_draw_list]
-        self.path_draw(path_draw_list)
+        self.path_draw(path_draw_list, length)
         # 得到结果列表中两点之间的距离
         path_between_list = []
         for idx in range(len(path_draw_list) - 1):

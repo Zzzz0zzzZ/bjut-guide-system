@@ -3,12 +3,18 @@ import HelpView from '@/views/help/HelpView.vue'
 import HomeView from '@/views/home/HomeView.vue'
 import UserView from '@/views/user/UserView.vue'
 import GuideView from '@/views/home/GuideView.vue'
+import TodoView from '@/views/todo/TodoView.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
     component: HomeView
+  },
+  {
+    path: '/todo',
+    name: 'todo',
+    component: TodoView
   },
   {
     path: '/help',

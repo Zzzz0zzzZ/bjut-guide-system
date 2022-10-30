@@ -9,6 +9,7 @@ export const tdlStore = defineStore('tdlStore', {
             token: null,
             count_total: null,         // 帖子总数
             count_finish: null,        // 帖子完成数
+            user_id: null
         }
     },
     actions: {
@@ -27,10 +28,11 @@ export const tdlStore = defineStore('tdlStore', {
                     })
                 } else {
                     this.token = res.data.token
+                    this.user_id = res.data.userid
                 }
                 axios({
                     method: "GET",
-                    url: '/todolist/count_finish/13',
+                    url: `/todolist/count_finish/${this.user_id}`,
                     headers: ({
                         "token": this.token
                     })
@@ -39,7 +41,7 @@ export const tdlStore = defineStore('tdlStore', {
                 })
                 axios({
                     method: "GET",
-                    url: '/todolist/count_total/13',
+                    url: `/todolist/count_total/${this.user_id}`,
                     headers: ({
                         "token": this.token
                     })

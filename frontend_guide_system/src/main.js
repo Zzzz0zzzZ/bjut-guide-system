@@ -24,10 +24,17 @@ import { Sticky } from 'vant'
 import { CountDown } from 'vant'
 import { Search } from 'vant'
 import { Popover } from 'vant'
+import { Field } from 'vant'
+import { SwipeCell } from 'vant'
+import { Checkbox, CheckboxGroup } from 'vant'
+import { Calendar } from 'vant'
+import { Swipe, SwipeItem } from 'vant'
+import { Dialog } from 'vant'
 import 'vant/es/toast/style'
 import 'vant/lib/index.css'
+import 'vant/es/dialog/style'
 import axios from 'axios'
 
 axios.defaults.baseURL = ''
 
-createApp(App).use(router).use(Tabbar).use(TabbarItem).use(Card).use(Tag).use(Button).use(NavBar).use(ConfigProvider).use(Col).use(Row).use(ActionSheet).use(TreeSelect).use(Toast).use(Icon).use(createPinia()).use(Circle).use(Divider).use(Step).use(Steps).use(DropdownItem).use(DropdownMenu).use(Tab).use(Tabs).use(Switch).use(Cell).use(CellGroup).use(Sticky).use(CountDown).use(Search).use(Popover).mount('#app')
+createApp(App).use(router).use(Tabbar).use(TabbarItem).use(Card).use(Tag).use(Button).use(NavBar).use(ConfigProvider).use(Col).use(Row).use(ActionSheet).use(TreeSelect).use(Toast).use(Icon).use(createPinia()).use(Circle).use(Divider).use(Step).use(Steps).use(DropdownItem).use(DropdownMenu).use(Tab).use(Tabs).use(Switch).use(Cell).use(CellGroup).use(Sticky).use(CountDown).use(Search).use(Popover).use(Field).use(SwipeCell).use(Checkbox).use(CheckboxGroup).use(Calendar).use(Swipe).use(SwipeItem).use(Dialog).mount('#app')

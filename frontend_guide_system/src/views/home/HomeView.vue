@@ -111,6 +111,9 @@ const tree_st = treeStore()             // 缓存已选的点，保证切换页�
 
 // 动态更改btn-area大小，并更改显示的按钮，并显示Tree-Select组件
 const showSelectArea = () => {
+    // 清空已选
+    tree_st.selected_list = []
+    activeId.value = []
     let btn_area_obj = document.getElementById('btn-area-obj')
     btn_area_obj.style.height = '57%'   //  调整treeSelect和按钮栏的覆盖bug
     let btn_row = document.getElementById('btn-row')

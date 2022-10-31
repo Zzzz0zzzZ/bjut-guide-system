@@ -104,7 +104,7 @@ const res_pic = ref('')     // 结果图片
 const tree_st = treeStore() // 用户选择的地点列表的缓存store
 
 const active_bar = ref(0)   // 选择出行方式的下标, 1-2-3
-const bar_title = ref(["步行", "骑行", "驾车"]) // 出行方式对应的名称
+const bar_title = ref(["DP", "ASO", "驾车"]) // 出行方式对应的名称
 
 const date = new Date()
 
@@ -119,7 +119,7 @@ if (route.path !== '/' && tree_st.selected_list.length === 0) {
 else {
     let msg = ref('加载中')
     if (tree_st.selected_list.length > 15) {
-        msg.value = '加载中...\n选择地点过多\n将为您自动舍弃'
+        msg.value = '规划中...\n选择地点过多\n将为您自动舍弃'
     }
     Toast.loading({
         message: msg.value,
@@ -146,7 +146,7 @@ const arrival_time = ref({
 // 各种交通方式的base前进速度  单位: m/min
 const forward_velocity = ref({
     walk: 60,
-    bike: 160,
+    bike: 60,
     car: 350,
 })
 
@@ -185,7 +185,7 @@ axios({
     // 用arrival_time_show数组的首尾两个元素相减, 获得全程耗时, 四舍五入  单位: 分钟
     onChangedBarRes.value = Math.round((arrival_time_show.value.slice(-1)[0] - arrival_time_show.value[0]) / (1000 * 60))
     // 清空treeStore缓存的值
-    tree_st.selected_list = []
+    // tree_st.selected_list = []
     // 请求[结果图片]
     axios({
         method: 'POST',
@@ -209,28 +209,131 @@ const onChangedBarRes = ref(0)
 
 // 监听出行方式变化, 动态修改到达时间
 watch(active_bar, (idx) => {
-    // 清空
-    arrival_time_show.value = []
-    // 获取当前时间, 以毫秒为单位, 并作为arrival_time_show的第一个元素
-    base_time.value = date.getHours() * 60 * 60 * 1000 + date.getMinutes() * 60 * 1000 + date.getSeconds() * 1000
-    arrival_time_show.value.push(base_time.value)
-    // arrival_time_show数组, 初始化时push了一个base_time, 这里继续向里追加, 每一次用前一个时间加需要的derta时间, 获得结果  单位: 毫秒
+    Toast.loading({
+        message: '规划中...',
+        forbidClick: true,
+        duration: 0,    // 0为一直展示, 知道axios完成, 执行Toast.clear()关闭
+        overlay: true,
+    })
+    // // 清空
+    // arrival_time_show.value = []
+    // // 获取当前时间, 以毫秒为单位, 并作为arrival_time_show的第一个元素
+    // base_time.value = date.getHours() * 60 * 60 * 1000 + date.getMinutes() * 60 * 1000 + date.getSeconds() * 1000
+    // arrival_time_show.value.push(base_time.value)
+    // // arrival_time_show数组, 初始化时push了一个base_time, 这里继续向里追加, 每一次用前一个时间加需要的derta时间, 获得结果  单位: 毫秒
+    // if (idx === 0) {
+    //     for (let i = 0; i < path_list.value.path_between_list.length; i++) {
+    //         arrival_time_show.value.push(arrival_time_show.value[i] + arrival_time.value.by_walk[i])
+    //     }
+    // }
+    // if (idx === 1) {
+    //     for (let i = 0; i < path_list.value.path_between_list.length; i++) {
+    //         arrival_time_show.value.push(arrival_time_show.value[i] + arrival_time.value.by_bike[i])
+    //     }
+    // }
+    // if (idx === 2) {
+    //     for (let i = 0; i < path_list.value.path_between_list.length; i++) {
+    //         arrival_time_show.value.push(arrival_time_show.value[i] + arrival_time.value.by_car[i])
+    //     }
+    // }
+    // // 用arrival_time_show数组的首尾两个元素相减, 获得全程耗时, 四舍五入  单位: 分钟
+    // onChangedBarRes.value = Math.round((arrival_time_show.value.slice(-1)[0] - arrival_time_show.value[0]) / (1000 * 60))
     if (idx === 0) {
-        for (let i = 0; i < path_list.value.path_between_list.length; i++) {
-            arrival_time_show.value.push(arrival_time_show.value[i] + arrival_time.value.by_walk[i])
-        }
+        axios({
+            method: 'POST',
+            url: '/api/guide',
+            data: qs.stringify({
+                "chosen_list": tree_st.selected_list.toString()
+            })
+        }).then(res => {
+            // 获取当前时间, 以毫秒为单位, 并作为arrival_time_show的第一个元素
+            arrival_time_show.value = []
+            base_time.value = date.getHours() * 60 * 60 * 1000 + date.getMinutes() * 60 * 1000 + date.getSeconds() * 1000
+            arrival_time_show.value.push(base_time.value)
+            // 步骤条 active 下标，默认最后一个
+            active.value = tree_st.selected_list.length
+            // 获取数据
+            path_list.value.path_idx_list = res.data.path_idx_list
+            path_list.value.path_num_list = res.data.path_num_list
+            path_list.value.path_between_list = res.data.path_between_list  // 两个地点之间距离
+            path_list.value.path_length = res.data.path_length
+            // 获取每两个点之间的所需时间
+            for (let i = 0; i < path_list.value.path_between_list.length; i++) {
+                arrival_time.value.by_walk.push((path_list.value.path_between_list[i] / forward_velocity.value.walk).toFixed(2) * 60 * 1000)
+                arrival_time.value.by_bike.push((path_list.value.path_between_list[i] / forward_velocity.value.bike).toFixed(2) * 60 * 1000)
+                arrival_time.value.by_car.push((path_list.value.path_between_list[i] / forward_velocity.value.car).toFixed(2) * 60 * 1000)
+            }
+            // arrival_time_show数组, 初始化时push了一个base_time, 这里继续向里追加, 每一次用前一个时间加需要的derta时间, 获得结果  单位: 毫秒
+            for (let i = 0; i < path_list.value.path_between_list.length; i++) {
+                arrival_time_show.value.push(arrival_time_show.value[i] + arrival_time.value.by_walk[i])
+            }
+            // 用arrival_time_show数组的首尾两个元素相减, 获得全程耗时, 四舍五入  单位: 分钟
+            onChangedBarRes.value = Math.round((arrival_time_show.value.slice(-1)[0] - arrival_time_show.value[0]) / (1000 * 60))
+            // 清空treeStore缓存的值
+            // tree_st.selected_list = []
+            // 请求[结果图片]
+            axios({
+                method: 'POST',
+                url: '/api/result',
+                responseType: 'blob'
+            }).then(res => {
+                let blob = new Blob([res.data])
+                let url = window.URL.createObjectURL(blob)
+                res_pic.value = url
+                Toast.clear()
+            })
+        })
     }
-    if (idx === 1) {
-        for (let i = 0; i < path_list.value.path_between_list.length; i++) {
-            arrival_time_show.value.push(arrival_time_show.value[i] + arrival_time.value.by_bike[i])
-        }
+    else if (idx === 1) {
+        console.log(idx);
+        console.log("111", tree_st.selected_list.toString());
+        axios({
+            method: 'POST',
+            url: '/api/guide_ga',
+            data: qs.stringify({
+                "chosen_list": tree_st.selected_list.toString()
+            })
+        }).then(res => {
+            // 获取当前时间, 以毫秒为单位, 并作为arrival_time_show的第一个元素
+            arrival_time_show.value = []
+            base_time.value = date.getHours() * 60 * 60 * 1000 + date.getMinutes() * 60 * 1000 + date.getSeconds() * 1000
+            arrival_time_show.value.push(base_time.value)
+            // 步骤条 active 下标，默认最后一个
+            active.value = tree_st.selected_list.length
+            // 获取数据
+            path_list.value.path_idx_list = res.data.path_idx_list
+            path_list.value.path_num_list = res.data.path_num_list
+            path_list.value.path_between_list = res.data.path_between_list  // 两个地点之间距离
+            path_list.value.path_length = res.data.path_length
+            // 获取每两个点之间的所需时间
+            for (let i = 0; i < path_list.value.path_between_list.length; i++) {
+                arrival_time.value.by_walk.push((path_list.value.path_between_list[i] / forward_velocity.value.walk).toFixed(2) * 60 * 1000)
+                arrival_time.value.by_bike.push((path_list.value.path_between_list[i] / forward_velocity.value.bike).toFixed(2) * 60 * 1000)
+                arrival_time.value.by_car.push((path_list.value.path_between_list[i] / forward_velocity.value.car).toFixed(2) * 60 * 1000)
+            }
+            // arrival_time_show数组, 初始化时push了一个base_time, 这里继续向里追加, 每一次用前一个时间加需要的derta时间, 获得结果  单位: 毫秒
+            for (let i = 0; i < path_list.value.path_between_list.length; i++) {
+                arrival_time_show.value.push(arrival_time_show.value[i] + arrival_time.value.by_walk[i])
+            }
+            // 用arrival_time_show数组的首尾两个元素相减, 获得全程耗时, 四舍五入  单位: 分钟
+            onChangedBarRes.value = Math.round((arrival_time_show.value.slice(-1)[0] - arrival_time_show.value[0]) / (1000 * 60))
+            // 清空treeStore缓存的值
+            // tree_st.selected_list = []
+            // 请求[结果图片]
+            axios({
+                method: 'POST',
+                url: '/api/result_ga',
+                responseType: 'blob'
+            }).then(res => {
+                let blob = new Blob([res.data])
+                let url = window.URL.createObjectURL(blob)
+                res_pic.value = url
+                Toast.clear()
+            })
+        })
     }
-    if (idx === 2) {
-        for (let i = 0; i < path_list.value.path_between_list.length; i++) {
-            arrival_time_show.value.push(arrival_time_show.value[i] + arrival_time.value.by_car[i])
-        }
+    else {
+        Toast('待定捏')
     }
-    // 用arrival_time_show数组的首尾两个元素相减, 获得全程耗时, 四舍五入  单位: 分钟
-    onChangedBarRes.value = Math.round((arrival_time_show.value.slice(-1)[0] - arrival_time_show.value[0]) / (1000 * 60))
 })
 </script>

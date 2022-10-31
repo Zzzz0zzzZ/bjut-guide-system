@@ -8,7 +8,7 @@
             <van-row justify="center" align="center">
                 <van-col span="4"></van-col>
                 <van-col span="6">
-                    <img src="../../assets/user_photo.jpeg"
+                    <img :src="user_photo"
                         style="position: relative; height:80%; width:50%; border-radius:50%; justify-content: center; text-align: center;">
                 </van-col>
                 <van-col span="14" style="font-size: 20px; text-align: left; justify-content: left;">下午好，王思哲！</van-col>
@@ -17,7 +17,7 @@
         <!-- 课程卡片 -->
         <div class="user-courses">
             <div style="position: relative; top:3%; left:4%; font-weight: bold;">我的课表</div>
-            <img src="../../assets/course.jpeg" style="position: relative; height:90%; width:100%; top: 7%;">
+            <img :src="course_pic" style="position: relative; height:90%; width:100%; top: 7%;">
         </div>
     </div>
     <!-- 偏好设置[待完成] -->
@@ -28,7 +28,34 @@
     </div>
 </template>
 
-<script setup></script>
+<script setup>
+import axios from 'axios'
+import { ref } from 'vue'
+
+// 获取用户头像
+const user_photo = ref('')
+axios({
+    method: 'POST',
+    url: '/api/user_photo',
+    responseType: 'blob'
+}).then(res => {
+    let blob = new Blob([res.data])
+    let url = window.URL.createObjectURL(blob)
+    user_photo.value = url
+})
+
+// 获取课表图片
+const course_pic = ref('')
+axios({
+    method: 'POST',
+    url: '/api/course',
+    responseType: 'blob'
+}).then(res => {
+    let blob = new Blob([res.data])
+    let url = window.URL.createObjectURL(blob)
+    course_pic.value = url
+})
+</script>
 
 <style scoped>
 .user-card {

@@ -1,0 +1,7 @@
+numpy~=1.22.1
+pandas~=1.4.0
+matplotlib~=3.5.2
+uvicorn~=0.18.3
+fastapi~=0.83.0
+sklearn~=0.0
+scikit-learn~=1.0.2

@@ -285,11 +285,9 @@ watch(active_bar, (idx) => {
         })
     }
     else if (idx === 1) {
-        console.log(idx);
-        console.log("111", tree_st.selected_list.toString());
         axios({
             method: 'POST',
-            url: '/api/guide_ga',
+            url: '/api/guide_aco',
             data: qs.stringify({
                 "chosen_list": tree_st.selected_list.toString()
             })
@@ -322,7 +320,7 @@ watch(active_bar, (idx) => {
             // 请求[结果图片]
             axios({
                 method: 'POST',
-                url: '/api/result_ga',
+                url: '/api/result_aco',
                 responseType: 'blob'
             }).then(res => {
                 let blob = new Blob([res.data])

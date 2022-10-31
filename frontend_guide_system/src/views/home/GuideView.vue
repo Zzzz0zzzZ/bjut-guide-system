@@ -117,8 +117,12 @@ if (route.path !== '/' && tree_st.selected_list.length === 0) {
     })
 }
 else {
+    let msg = ref('加载中')
+    if (tree_st.selected_list.length > 15) {
+        msg.value = '加载中...\n选择地点过多\n将为您自动舍弃'
+    }
     Toast.loading({
-        message: '加载中',
+        message: msg.value,
         forbidClick: true,
         duration: 0    // 0为一直展示, 知道axios完成, 执行Toast.clear()关闭
     })

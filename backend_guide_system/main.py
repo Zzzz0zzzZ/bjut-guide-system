@@ -141,6 +141,13 @@ async def course():
         media_type="image/png"
     )
 
+# 返回学校地点的经纬度坐标list
+@app.get("/lng_lat_list")
+def get_lng_lat_list():
+    lng_lat_list = pd.read_csv('./data/read/long_lat_finalized.csv', header=None).values.tolist()
+    return lng_lat_list
+
+
 if __name__ == '__main__':
     uvicorn.run(app)
     # uvicorn.run(app, host='0.0.0.0', port=4554)

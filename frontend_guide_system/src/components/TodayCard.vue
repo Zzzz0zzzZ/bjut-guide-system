@@ -77,7 +77,7 @@ axios.get('/api/next_course').then(res => {
     height: 0%;
     justify-content: center;
     text-align: center;
-    background-color: rgba(225, 225, 225, 0.802);
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
     transition: 500ms;
     opacity: 0;

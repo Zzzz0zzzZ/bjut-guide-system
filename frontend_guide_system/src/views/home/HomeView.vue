@@ -2,6 +2,7 @@
     <van-nav-bar title="BJUT校园导航" :safe-area-inset-top='true' :fixed="true" :placeholder="true" />
     <!-- 首页背景图片待定 -->
     <!-- <img src="@/assets/background.png" style="filter: blur(5px); width: 100%; height: 100%;"> -->
+    <MapContainer />
     <!-- 今日面板 -->
     <TodayCard id="card" />
     <div class="btn-area" id="btn-area-obj">
@@ -99,6 +100,7 @@ import { computed, onUpdated, ref } from "vue"
 import { treeStore } from '@/stores/treeStore'
 import { useRouter } from 'vue-router'
 import TodayCard from "../../components/TodayCard.vue"
+import MapContainer from "@/components/MapContainer.vue"
 import axios from "axios"
 
 // 使用路由

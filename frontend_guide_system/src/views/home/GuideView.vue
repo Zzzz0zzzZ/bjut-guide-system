@@ -104,6 +104,7 @@ import { Toast } from 'vant'
 import { ref, watch } from 'vue'
 import { treeStore } from '@/stores/treeStore'
 import { lnglatStore } from '@/stores/lnglatStore'
+import { settingStore } from '@/stores/settingStore'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import qs from 'qs'
@@ -115,6 +116,7 @@ const active = ref(0)       // 高亮的结果内容行
 const res_pic = ref('')     // 结果图片
 const tree_st = treeStore() // 用户选择的地点列表的缓存store
 const lnglat_st = lnglatStore() // lntlat_list, 保存结果用于高德导航
+const setting_st = settingStore()   // 自动舍弃算法-用户设置
 
 const active_bar = ref(0)   // 选择出行方式的下标, 1-2-3
 const bar_title = ref(["DP", "ASO", "驾车"]) // 出行方式对应的名称
@@ -130,9 +132,15 @@ if (route.path !== '/' && tree_st.selected_list.length === 0) {
     })
 }
 else {
-    let msg = ref('加载中')
-    if (tree_st.selected_list.length > 15) {
-        msg.value = '规划中...\n选择地点过多\n将为您自动舍弃'
+    let msg = ref('规划中...')
+    if (tree_st.selected_list.length > 10 && setting_st.user_settings == '0') {
+        msg.value = '规划中...\n选择地点过多\n将为您\n自动舍弃'
+    }
+    else if (tree_st.selected_list.length > 15 && setting_st.user_settings == '1') {
+        msg.value = '规划中...\n选择地点过多\n将为您\n自动舍弃'
+    }
+    else if (tree_st.selected_list.length > 20 && setting_st.user_settings == '2') {
+        msg.value = '规划中...\n选择地点过多\n将为您\n自动舍弃'
     }
     Toast.loading({
         message: msg.value,
@@ -244,13 +252,22 @@ const onChangedBarRes = ref(0)
 
 // 监听出行方式变化, 动态修改到达时间
 watch(active_bar, (idx) => {
-    Toast.loading({
-        message: '规划中...',
-        forbidClick: true,
-        duration: 0,    // 0为一直展示, 知道axios完成, 执行Toast.clear()关闭
-        overlay: true,
-    })
     if (idx === 0) {
+        const msg = ref('规划中...')
+        if (tree_st.selected_list.length > 10 && setting_st.user_settings == '0') {
+            msg.value = '规划中...\n选择地点过多\n将为您\n自动舍弃'
+        }
+        else if (tree_st.selected_list.length > 15 && setting_st.user_settings == '1') {
+            msg.value = '规划中...\n选择地点过多\n将为您\n自动舍弃'
+        }
+        else if (tree_st.selected_list.length > 20 && setting_st.user_settings == '2') {
+            msg.value = '规划中...\n选择地点过多\n将为您\n自动舍弃'
+        }
+        Toast.loading({
+            message: msg.value,
+            forbidClick: true,
+            duration: 0    // 0为一直展示, 知道axios完成, 执行Toast.clear()关闭
+        })
         axios({
             method: 'POST',
             url: '/api/guide',
@@ -299,6 +316,11 @@ watch(active_bar, (idx) => {
         })
     }
     else if (idx === 1) {
+        Toast.loading({
+            message: '规划中...\n完整地点\n(未舍弃)',
+            forbidClick: true,
+            duration: 0,    // 0为一直展示, 知道axios完成, 执行Toast.clear()关闭
+        })
         axios({
             method: 'POST',
             url: '/api/guide_aco',

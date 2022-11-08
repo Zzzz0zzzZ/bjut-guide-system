@@ -99,6 +99,7 @@ import { Toast } from "vant"
 import { computed, onUpdated, ref } from "vue"
 import { treeStore } from '@/stores/treeStore'
 import { useRouter } from 'vue-router'
+import { settingStore } from "@/stores/settingStore"
 import TodayCard from "../../components/TodayCard.vue"
 import MapContainer from "@/components/MapContainer.vue"
 import axios from "axios"
@@ -110,6 +111,12 @@ const guideHistoryData = ref([])        // 规划历史记录数据列表
 const showSelectAreaFlag = ref(false)   // 是否显示地点选择板
 const showHistoryGuideFlag = ref(false) // 是否显示历史规划板
 const tree_st = treeStore()             // 缓存已选的点，保证切换页面后数据不会丢失
+
+// 初始化用户设置
+const setting_st = settingStore()
+axios.get('/api/get_settings').then(res => {
+    setting_st.user_settings = res.data
+})
 
 // 动态更改btn-area大小，并更改显示的按钮，并显示Tree-Select组件
 const showSelectArea = () => {
@@ -199,7 +206,6 @@ const visTodayCard = () => {
 
 onUpdated(() => {
     tree_st.saveSelectChange(activeId)
-    console.log("pinia-treeStore", tree_st.selected_list);
 })
 
 // Tree-Select

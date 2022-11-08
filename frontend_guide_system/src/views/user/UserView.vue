@@ -20,17 +20,85 @@
             <img :src="course_pic" style="position: relative; height:90%; width:100%; top: 7%;">
         </div>
     </div>
-    <!-- 偏好设置[待完成] -->
+    <!-- 偏好设置 -->
     <div class="user-settings">
-        <van-button icon="idcard" type="primary" color="#3d8af2" block plain>
+        <van-button icon="idcard" type="primary" color="#3d8af2" block plain @click="showPopup">
             偏好设置
         </van-button>
     </div>
+    <van-popup v-model:show="showSettings" round closeable position="bottom" :style="{ height: '50%' }">
+        <!-- 自动舍弃算法设置 -->
+        <h3 style="text-align: center; margin-bottom: 0;">偏好设置</h3>
+        <div style="position:relative; top:5%">
+            <!-- 子设置标题 -->
+            <div style="width: 90%; left:5%; position:relative">
+                <h4 style="margin-top: 10px; margin-bottom:5px">自动舍弃算法阈值</h4>
+                <div style="color: grey; margin-bottom: 10px;">当选择地点超过一定数量时，系统会为您自动舍弃部分较远的点，优先去较近的地点。</div>
+            </div>
+
+            <!-- 选择部分 -->
+            <van-radio-group v-model="checked">
+                <van-cell-group inset>
+                    <van-cell title="&nbsp;多于10个点自动舍弃" clickable @click="checked = '0'" style="padding: 10px 0;">
+                        <template #right-icon>
+                            <van-radio name="0" />
+                        </template>
+                    </van-cell>
+                    <van-cell title="&nbsp;多于15个点自动舍弃(推荐)" clickable @click="checked = '1'" style="padding: 10px 0; ">
+                        <template #right-icon>
+                            <van-radio name="1" />
+                        </template>
+                    </van-cell>
+                    <van-cell title="&nbsp;多于20个点自动舍弃(不推荐,规划时间较长)" clickable @click="checked = '2'"
+                        style="padding: 10px 0;">
+                        <template #right-icon>
+                            <van-radio name="2" />
+                        </template>
+                    </van-cell>
+                </van-cell-group>
+            </van-radio-group>
+        </div>
+        <van-button style="position: relative; top:10%; width:90%; left:5%" type="primary" block @click="saveSettings">
+            保存设置</van-button>
+    </van-popup>
+
 </template>
 
 <script setup>
 import axios from 'axios'
+import qs from 'qs'
 import { ref } from 'vue'
+import { settingStore } from '@/stores/settingStore'
+import { Toast } from 'vant';
+
+const setting_st = settingStore()       // user-settings store
+const checked = ref(setting_st.user_settings)   // user选择(包含后端加载的默认选择)
+const showSettings = ref(false)                 // 是否展示选择面板
+
+// 展示设置面板
+const showPopup = () => {
+    showSettings.value = true
+}
+
+// 保存设置, 并隐藏设置面板
+const saveSettings = () => {
+    axios({
+        method: 'POST',
+        url: '/api/set_settings',
+        data: qs.stringify({
+            "choose": checked.value
+        })
+    }).then(res => {
+        if (res.status === 200) {
+            showSettings.value = false
+            Toast({
+                type: 'success',
+                duration: 600,
+                message: '保存设置成功'
+            })
+        }
+    })
+}
 
 // 获取用户头像
 const user_photo = ref('')

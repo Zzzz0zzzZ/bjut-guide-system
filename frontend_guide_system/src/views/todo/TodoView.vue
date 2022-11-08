@@ -44,8 +44,11 @@
                 </div>
             </template>
         </div>
-        <!-- DatePicker设置到期日 -->
-        <van-calendar v-model:show="showCalendarPicker" @confirm="onConfirm" />
+        <!-- 定制主题 -->
+        <van-config-provider :theme-vars="themeVars">
+            <!-- DatePicker设置到期日 -->
+            <van-calendar v-model:show="showCalendarPicker" @confirm="onConfirm" />
+        </van-config-provider>
     </div>
 </template>
 
@@ -55,6 +58,12 @@ import { ref, reactive, toRaw } from 'vue'
 import { tdlStore } from '@/stores/tdlStore'
 import axios from 'axios'
 import dayjs from 'dayjs'
+
+// 主题定制-日期选择
+const themeVars = {
+    buttonDangerBackgroundColor: '#3d8af2',
+    buttonDangerBorderColor: '#3d8af2'
+}
 
 const tdl_st = tdlStore()           // 模拟登陆, 获取token
 const content_list = reactive([])   // 获取的待办事项

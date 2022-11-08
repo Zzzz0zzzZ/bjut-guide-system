@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HelpView from '@/views/help/HelpView.vue'
 import HomeView from '@/views/home/HomeView.vue'
 import UserView from '@/views/user/UserView.vue'
 import GuideView from '@/views/home/GuideView.vue'
 import TodoView from '@/views/todo/TodoView.vue'
+import SrouteView from '@/views/home/SrouteView'
 
 const routes = [
   {
@@ -17,11 +17,6 @@ const routes = [
     component: TodoView
   },
   {
-    path: '/help',
-    name: 'help',
-    component: HelpView
-  },
-  {
     path: '/user',
     name: 'user',
     component: UserView
@@ -31,6 +26,11 @@ const routes = [
     name: 'guide',
     component: GuideView
   },
+  {
+    path: '/sroute',
+    name: 'sroute',
+    component: SrouteView
+  }
 ]
 
 const router = createRouter({

@@ -32,7 +32,10 @@
                                 {{ content.content }}
                             </template>
                             <template #value>
-                                <div v-if="content.deadline">还剩{{ getLastingDays(content) }}天</div>
+                                <div v-if="content.deadline">{{ getLastingDays(content) === 0 ? '就是今天!' :
+                                        (getLastingDays(content) > 0) ? `还剩${getLastingDays(content)}天`
+                                            : `过期${Math.abs(getLastingDays(content))}天`
+                                }}</div>
                             </template>
                         </van-cell>
                         <template #right>

@@ -30,6 +30,8 @@ import { Checkbox, CheckboxGroup } from 'vant'
 import { Calendar } from 'vant'
 import { Swipe, SwipeItem } from 'vant'
 import { Dialog } from 'vant'
+import { Popup } from 'vant'
+import { RadioGroup, Radio } from 'vant'
 import 'vant/es/toast/style'
 import 'vant/lib/index.css'
 import 'vant/es/dialog/style'
@@ -40,4 +42,4 @@ axios.defaults.baseURL = ''
 window._AMapSecurityConfig = {
     securityJsCode: "ae7e696254097c38771c3736c0dd9110"
 };
-createApp(App).use(router).use(Tabbar).use(TabbarItem).use(Card).use(Tag).use(Button).use(NavBar).use(ConfigProvider).use(Col).use(Row).use(ActionSheet).use(TreeSelect).use(Toast).use(Icon).use(createPinia()).use(Circle).use(Divider).use(Step).use(Steps).use(DropdownItem).use(DropdownMenu).use(Tab).use(Tabs).use(Switch).use(Cell).use(CellGroup).use(Sticky).use(CountDown).use(Search).use(Popover).use(Field).use(SwipeCell).use(Checkbox).use(CheckboxGroup).use(Calendar).use(Swipe).use(SwipeItem).use(Dialog).mount('#app')
+createApp(App).use(router).use(Tabbar).use(TabbarItem).use(Card).use(Tag).use(Button).use(NavBar).use(ConfigProvider).use(Col).use(Row).use(ActionSheet).use(TreeSelect).use(Toast).use(Icon).use(createPinia()).use(Circle).use(Divider).use(Step).use(Steps).use(DropdownItem).use(DropdownMenu).use(Tab).use(Tabs).use(Switch).use(Cell).use(CellGroup).use(Sticky).use(CountDown).use(Search).use(Popover).use(Field).use(SwipeCell).use(Checkbox).use(CheckboxGroup).use(Calendar).use(Swipe).use(SwipeItem).use(Dialog).use(Popup).use(Radio).use(RadioGroup).mount('#app')

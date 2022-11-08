@@ -19,7 +19,6 @@ const converted_list = ref([])  // 高德坐标系下的经纬度
 // 获取百度坐标系经纬度
 axios.get('http://127.0.0.1:8000/lng_lat_list').then(res => {
     lng_lat_ori.value = res.data
-    console.log(lng_lat_ori.value)
     // 创建initMap函数
     AMapLoader.load({
         key: 'c1d53c0c4e919bd417b76365a05c2e8a',  // 高德key
@@ -48,7 +47,6 @@ axios.get('http://127.0.0.1:8000/lng_lat_list').then(res => {
             if (result.info === 'ok') {
                 converted_list.value = result.locations
                 lnglat_st.lnglat_converted_list = result.locations  /////////////////
-                console.log('cvr-list', converted_list.value);
                 // 添加、绘制坐标点 [待更改为大数组, 利于添加点击事件]
                 for (let item of converted_list.value) {
                     let marker = new AMap.Marker({

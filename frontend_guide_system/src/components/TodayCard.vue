@@ -57,7 +57,6 @@ setTimeout(() => {
 }, 20)
 
 axios.get('https://v0.yiketianqi.com/api?unescape=1&version=v61&appid=43429654&appsecret=qSjImVc6').then(res => {
-    console.log(res);
     today_info.value.weather_info = res.data
 })
 today_info.value.time_info.today_date = date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'

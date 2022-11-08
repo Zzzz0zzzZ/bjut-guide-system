@@ -14,6 +14,7 @@ from algorithm.calcpath import CalcPath_DP
 from algorithm.autopath import AutoPather
 from algorithm.calcpath_aco import run_aco
 from funcs.getcourse import GetCourse
+from funcs.settings import Settings
 
 # 实例化
 app=FastAPI()
@@ -52,10 +53,24 @@ def getPaths(chosen_list=Form(None)):
     # 接受表单数据，转换为list类型
     chosen_list =[int(x) for x in chosen_list.split(',')]
     chosen_list_len = len(chosen_list)
-    # 如果选择地点多于15个点，将执行自动舍弃算法
-    if chosen_list_len > 15:
-        auto_pather = AutoPather(chosen_list=chosen_list)
-        chosen_list = auto_pather.model_forward()
+    # 获取用户的自动舍弃算法设置
+    user_setting_obj = Settings()
+    usr_current_st = user_setting_obj.get_previous_settings()
+    if usr_current_st == '0':
+        # 如果选择地点多于15个点，将执行自动舍弃算法
+        if chosen_list_len > 10:
+            auto_pather = AutoPather(chosen_list=chosen_list)
+            chosen_list = auto_pather.model_forward()
+    if usr_current_st == '1':
+        # 如果选择地点多于15个点，将执行自动舍弃算法
+        if chosen_list_len > 15:
+            auto_pather = AutoPather(chosen_list=chosen_list)
+            chosen_list = auto_pather.model_forward()
+    elif usr_current_st == '2':
+        # 如果选择地点多于20个点，将执行自动舍弃算法
+        if chosen_list_len > 20:
+            auto_pather = AutoPather(chosen_list=chosen_list)
+            chosen_list = auto_pather.model_forward()
     # 实例化
     alg = CalcPath_DP(chosen_list=chosen_list)
     # 运行算法 DP
@@ -146,6 +161,23 @@ async def course():
 def get_lng_lat_list():
     lng_lat_list = pd.read_csv('./data/read/long_lat_finalized.csv', header=None).values.tolist()
     return lng_lat_list
+
+# 获取用户设置
+@app.get("/get_settings")
+def get_user_settings():
+    user_setting_obj = Settings()
+    res = user_setting_obj.get_previous_settings()
+    return res
+
+# 更改用户设置
+@app.post("/set_settings")
+def set_user_settings(choose=Form(None)):
+    user_setting_obj = Settings()
+    user_setting_obj.set_current_settings(choose=choose)
+    return {
+        'status': 'success',
+        'code': 200
+    }
 
 
 if __name__ == '__main__':

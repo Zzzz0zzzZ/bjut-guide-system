@@ -12,9 +12,9 @@
             </van-row>
             <van-row style="text-align:center; justify-content:center">
                 <van-col span="4">{{ today_info.weather_info.city }}</van-col>
-                <van-col span="8">{{ today_info.weather_info.weather }}</van-col>
-                <van-col span="12">{{ today_info.weather_info.temp1 }}&nbsp;-&nbsp;{{ today_info.weather_info.temp2
-                }}</van-col>
+                <van-col span="8">{{ today_info.weather_info.wea }}</van-col>
+                <van-col span="12">{{ today_info.weather_info.tem2 }}℃&nbsp;-&nbsp;{{ today_info.weather_info.tem1
+                }}℃</van-col>
             </van-row>
             <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0px', margin: '5px' }" />
             <van-row style="text-align:center; justify-content:center">
@@ -56,8 +56,9 @@ setTimeout(() => {
     rate.value = tdl_st.getPortion
 }, 20)
 
-axios.get('/weather').then(res => {
-    today_info.value.weather_info = res.data.weatherinfo
+axios.get('https://v0.yiketianqi.com/api?unescape=1&version=v61&appid=43429654&appsecret=qSjImVc6').then(res => {
+    console.log(res);
+    today_info.value.weather_info = res.data
 })
 today_info.value.time_info.today_date = date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
 today_info.value.time_info.today_weekday = date.getDay()

@@ -33,7 +33,7 @@
         <div
             style="margin: 4%; padding:1%; border-radius: 5px ;background-color: white; overflow: scroll; height: 66%;">
             <van-tabs v-model:active="active_bar" swipeable color="#3d8af2">
-                <van-tab v-for="index in 3" :key="index" :bar_title="bar_title">
+                <van-tab v-for="index in 2" :key="index" :bar_title="bar_title">
                     <!-- index从1开始的, 所以为了与数组起始下标0对应, 需要减1 -->
                     <template #title>
                         {{ bar_title[index - 1] }}
@@ -119,7 +119,7 @@ const lnglat_st = lnglatStore() // lntlat_list, 保存结果用于高德导航
 const setting_st = settingStore()   // 自动舍弃算法-用户设置
 
 const active_bar = ref(0)   // 选择出行方式的下标, 1-2-3
-const bar_title = ref(["DP", "ASO", "驾车"]) // 出行方式对应的名称
+const bar_title = ref(["推荐路线", "完整路线", "驾车"]) // 出行方式对应的名称
 
 const date = new Date()
 

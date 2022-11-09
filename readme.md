@@ -8,13 +8,13 @@
 
 2、记录待办事项，支持截止日期设置，实时提醒；
 
-3、待办事项支持多端协同记录([网页端](http://152.136.154.181:4547/todo/login)、手机端)
+3、待办事项支持多端协同记录([网页端](http://152.136.154.181:4547/todo/login)、[手机端](https://github.com/Zzzz0zzzZ/bjut-guide-system/releases/tag/v1.0.0))
 
 4、课表显示、天气提醒
 
 ## 项目构建
 
-项目打包借助HBuilderX，发安卓包（见仓库的`releases`）
+项目打包借助HBuilderX，发[安卓包](https://github.com/Zzzz0zzzZ/bjut-guide-system/releases/tag/v1.0.0)
 
 ### 前端
 

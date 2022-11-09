@@ -74,7 +74,7 @@ tdl_st.updateCount()                // 模拟登陆, 获取token
 
 // 获取待办
 axios({
-    url: `/todolist/todos/${tdl_st.user_id}`,
+    url: `http://152.136.154.181:8060/todos/${tdl_st.user_id}`,
     method: 'GET',
     headers: ({
         "token": tdl_st.token
@@ -90,7 +90,7 @@ const todo_value = ref('')      // 添加待办的内容
 // 点击添加按钮时
 const onClickAddButton = (val) => {
     axios({
-        url: '/todolist/add',
+        url: 'http://152.136.154.181:8060/add',
         method: 'POST',
         headers: ({
             "token": tdl_st.token
@@ -102,7 +102,7 @@ const onClickAddButton = (val) => {
     }).then(() => {
         content_list.value.unshift(val)
         axios({
-            url: `/todolist/todos/${tdl_st.user_id}`,
+            url: `http://152.136.154.181:8060/todos/${tdl_st.user_id}`,
             method: 'GET',
             headers: ({
                 "token": tdl_st.token
@@ -120,7 +120,7 @@ const onClickAddButton = (val) => {
 const onClickComplete = (content) => {
     let content_ori = toRaw(content)
     axios({
-        url: '/todolist/update',
+        url: 'http://152.136.154.181:8060/update',
         method: 'POST',
         data: ({
             id: content_ori.id,
@@ -147,7 +147,7 @@ const onClickDelete = (content) => {
         // 点击确认时
         .then(() => {
             axios({
-                url: '/todolist/delete',
+                url: 'http://152.136.154.181:8060/delete',
                 method: 'POST',
                 data: toRaw(content),
                 headers: ({
@@ -178,7 +178,7 @@ const onConfirm = (value) => {
     const formatDate = (date) => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     let select_date = formatDate(value);
     axios({
-        url: '/todolist/update',
+        url: 'http://152.136.154.181:8060/update',
         method: 'POST',
         data: ({
             id: currentSettingsId.value,
@@ -196,7 +196,7 @@ const onConfirm = (value) => {
 // 刷新待办, 重新请求接口
 const refresh_list = () => {
     axios({
-        url: `/todolist/todos/${tdl_st.user_id}`,
+        url: `http://152.136.154.181:8060/todos/${tdl_st.user_id}`,
         method: 'GET',
         headers: ({
             "token": tdl_st.token
@@ -213,7 +213,7 @@ const getLastingDays = (content) => {
     let ddl = content.deadline
     let todayDate = new Date()
     let today = todayDate.toISOString().split('T')[0]
-    let days_left = dayjs(ddl).diff(today, 'day') - 1
+    let days_left = dayjs(ddl).diff(today, 'day')
     return days_left
 }
 

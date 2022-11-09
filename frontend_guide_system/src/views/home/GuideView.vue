@@ -183,7 +183,7 @@ const showPicTitleFlag = ref(false) // 是否显示图片提示信息的标志
 // 根据treeStore内容，获取路线结果
 axios({
     method: 'POST',
-    url: '/api/guide',
+    url: 'http://106.12.165.78:4554/guide',
     data: qs.stringify({
         "chosen_list": tree_st.selected_list.toString()
     })
@@ -215,7 +215,7 @@ axios({
     // 请求[结果图片]
     axios({
         method: 'POST',
-        url: '/api/result',
+        url: 'http://106.12.165.78:4554/result',
         responseType: 'blob'
     }).then(res => {
         let blob = new Blob([res.data])
@@ -270,7 +270,7 @@ watch(active_bar, (idx) => {
         })
         axios({
             method: 'POST',
-            url: '/api/guide',
+            url: 'http://106.12.165.78:4554/guide',
             data: qs.stringify({
                 "chosen_list": tree_st.selected_list.toString()
             })
@@ -305,7 +305,7 @@ watch(active_bar, (idx) => {
             // 请求[结果图片]
             axios({
                 method: 'POST',
-                url: '/api/result',
+                url: 'http://106.12.165.78:4554/result',
                 responseType: 'blob'
             }).then(res => {
                 let blob = new Blob([res.data])
@@ -323,7 +323,7 @@ watch(active_bar, (idx) => {
         })
         axios({
             method: 'POST',
-            url: '/api/guide_aco',
+            url: 'http://106.12.165.78:4554/guide_aco',
             data: qs.stringify({
                 "chosen_list": tree_st.selected_list.toString()
             })
@@ -358,7 +358,7 @@ watch(active_bar, (idx) => {
             // 请求[结果图片]
             axios({
                 method: 'POST',
-                url: '/api/result_aco',
+                url: 'http://106.12.165.78:4554/result_aco',
                 responseType: 'blob'
             }).then(res => {
                 let blob = new Blob([res.data])

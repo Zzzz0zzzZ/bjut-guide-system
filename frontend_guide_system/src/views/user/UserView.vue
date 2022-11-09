@@ -84,7 +84,7 @@ const showPopup = () => {
 const saveSettings = () => {
     axios({
         method: 'POST',
-        url: '/api/set_settings',
+        url: 'http://106.12.165.78:4554/set_settings',
         data: qs.stringify({
             "choose": checked.value
         })
@@ -104,7 +104,7 @@ const saveSettings = () => {
 const user_photo = ref('')
 axios({
     method: 'POST',
-    url: '/api/user_photo',
+    url: 'http://106.12.165.78:4554/user_photo',
     responseType: 'blob'
 }).then(res => {
     let blob = new Blob([res.data])
@@ -116,7 +116,7 @@ axios({
 const course_pic = ref('')
 axios({
     method: 'POST',
-    url: '/api/course',
+    url: 'http://106.12.165.78:4554/course',
     responseType: 'blob'
 }).then(res => {
     let blob = new Blob([res.data])

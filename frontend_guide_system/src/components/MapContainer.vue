@@ -17,7 +17,7 @@ const lng_lat_ori = ref([])     // 百度坐标系下的经纬度
 const converted_list = ref([])  // 高德坐标系下的经纬度
 
 // 获取百度坐标系经纬度
-axios.get('http://127.0.0.1:8000/lng_lat_list').then(res => {
+axios.get('http://106.12.165.78:4554/lng_lat_list').then(res => {
     lng_lat_ori.value = res.data
     // 创建initMap函数
     AMapLoader.load({

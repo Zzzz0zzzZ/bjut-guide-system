@@ -16,7 +16,7 @@ export const tdlStore = defineStore('tdlStore', {
         updateCount() {
             axios({
                 method: 'POST',
-                url: '/todolist/login',
+                url: 'http://152.136.154.181:8060/login',
                 data: ({
                     "username": "课设",
                     "password": SHA256("123")
@@ -32,7 +32,7 @@ export const tdlStore = defineStore('tdlStore', {
                 }
                 axios({
                     method: "GET",
-                    url: `/todolist/count_finish/${this.user_id}`,
+                    url: `http://152.136.154.181:8060/count_finish/${this.user_id}`,
                     headers: ({
                         "token": this.token
                     })
@@ -41,7 +41,7 @@ export const tdlStore = defineStore('tdlStore', {
                 })
                 axios({
                     method: "GET",
-                    url: `/todolist/count_total/${this.user_id}`,
+                    url: `http://152.136.154.181:8060/count_total/${this.user_id}`,
                     headers: ({
                         "token": this.token
                     })

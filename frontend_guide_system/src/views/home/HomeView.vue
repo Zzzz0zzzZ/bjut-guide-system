@@ -114,7 +114,7 @@ const tree_st = treeStore()             // 缓存已选的点，保证切换页�
 
 // 初始化用户设置
 const setting_st = settingStore()
-axios.get('/api/get_settings').then(res => {
+axios.get('http://106.12.165.78:4554/get_settings').then(res => {
     setting_st.user_settings = res.data
 })
 
@@ -159,7 +159,7 @@ const beginGuide = () => {
 
 // 查看历史信息
 const showHistoryGuide = () => {
-    axios.get('/api/history_guide').then(res => {
+    axios.get('http://106.12.165.78:4554/history_guide').then(res => {
         guideHistoryData.value = res.data
     })
     let btn_area_obj = document.getElementById('btn-area-obj')

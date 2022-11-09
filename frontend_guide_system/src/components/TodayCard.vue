@@ -62,7 +62,7 @@ axios.get('https://v0.yiketianqi.com/api?unescape=1&version=v61&appid=43429654&a
 today_info.value.time_info.today_date = date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
 today_info.value.time_info.today_weekday = date.getDay()
 
-axios.get('/api/next_course').then(res => {
+axios.get('http://106.12.165.78:4554/next_course').then(res => {
     notice.value = res.data
 })
 

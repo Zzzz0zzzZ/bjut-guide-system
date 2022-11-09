@@ -87,7 +87,7 @@ const onClickRightBtn = () => {
 }
 
 // 获取百度坐标系经纬度
-axios.get('http://127.0.0.1:8000/lng_lat_list').then(res => {
+axios.get('http://106.12.165.78:4554/lng_lat_list').then(res => {
     lng_lat_ori.value = res.data
     // console.log(lng_lat_ori.value)
     // 创建initMap函数

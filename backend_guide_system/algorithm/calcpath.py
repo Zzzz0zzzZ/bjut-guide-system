@@ -178,13 +178,18 @@ class CalcPath_DP:
             '规划时间': [processed_data]
         }
         # 向csv追加一条记录
-        df = pd.DataFrame(write_data)
-        df.to_csv('./data/history/history_data.csv', mode='a', index=False, header=False, encoding='utf-8')
-        # 读csv, 只保留最新的10条数据
-        data_read = pd.read_csv('./data/history/history_data.csv', encoding='utf-8', header=None)
-        data_write = data_read[-10:]
-        # 写回csv
-        data_write.to_csv('./data/history/history_data.csv', header=None, index=None, encoding='utf-8')
+        previous_data_length = pd.read_csv('./data/history/history_data.csv', encoding='utf-8', header=None)[-1:].iloc[:, 1:2].values.tolist()
+        # print("P_DATA                   ", previous_data.iloc[:, 1:2].values.tolist())
+        if path_length == previous_data_length:
+            pass
+        else:
+            df = pd.DataFrame(write_data)
+            df.to_csv('./data/history/history_data.csv', mode='a', index=False, header=False, encoding='utf-8')
+            # 读csv, 只保留最新的10条数据
+            data_read = pd.read_csv('./data/history/history_data.csv', encoding='utf-8', header=None)
+            data_write = data_read[-10:]
+            # 写回csv
+            data_write.to_csv('./data/history/history_data.csv', header=None, index=None, encoding='utf-8')
 
     def run(self):
         '''

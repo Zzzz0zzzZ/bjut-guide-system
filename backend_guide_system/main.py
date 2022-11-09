@@ -181,5 +181,5 @@ def set_user_settings(choose=Form(None)):
 
 
 if __name__ == '__main__':
-    uvicorn.run(app)
-    # uvicorn.run(app, host='0.0.0.0', port=4554)
+    # uvicorn.run(app)
+    uvicorn.run(app, host='0.0.0.0', port=4554)

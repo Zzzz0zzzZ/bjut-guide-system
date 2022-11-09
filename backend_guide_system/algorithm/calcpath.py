@@ -179,7 +179,7 @@ class CalcPath_DP:
         }
         # 向csv追加一条记录
         previous_data_length = pd.read_csv('./data/history/history_data.csv', encoding='utf-8', header=None)[-1:].iloc[:, 1:2].values.tolist()
-        # print("P_DATA                   ", previous_data.iloc[:, 1:2].values.tolist())
+        # 判断是否需要添加
         if path_length == previous_data_length:
             pass
         else:

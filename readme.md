@@ -14,7 +14,7 @@
 
 ## 项目构建
 
-项目打包借助HBuilderX，发安卓包。
+项目打包借助HBuilderX，发安卓包（见仓库的`releases`）
 
 ### 前端
 

@@ -34,6 +34,8 @@ FastAPI
 
 ### 移动端部署
 
+注：详细流程可参考项目文件`vue3项目借助HBuilder打包.pdf`
+
 1、前端项目打包
 
 ```shell
